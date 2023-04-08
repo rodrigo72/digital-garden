@@ -432,8 +432,8 @@ const eventHandler = (() => {
 		function displayListener(event) {
 			console.log("display");
 
-			domHandler.createModal(data);
 			event.preventDefault();
+			domHandler.createModal(data);
 		}
 		displayButton.addEventListener("click", displayListener);
 	};
@@ -441,6 +441,8 @@ const eventHandler = (() => {
 	function handleKeyPress(event) {
 		console.log("esc");
 
+		event.preventDefault();
+		
 		if (!document.getElementById("modal")) {
 			document.removeEventListener("keyup", handleKeyPress);
 		} else if (event.keyCode === 27) {
