@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   <title>Home Page</title>
+   <link rel="stylesheet" type="text/css" href="./css/homeStyles.css">
+   <link rel="stylesheet" type="text/css" href="./css/default.min.css">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/katex.min.css" integrity="sha512-mQwom8Ns4op+H29oDkD/LXO/OsXPvCFfkgZkFAVrhhePzRLU8NUI3Nkm43NhWUSmj3p5Cca2HTEkMQmXQRwDQQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+   <div class="header">
+      <div class="searchBox">
+         <input id="search-input" class="searchInput" type="text" name="" placeholder="Search">
+         <button id="search-btn"class="searchButton">
+            <img class="material-icons" src="./img/search_icon.png" alt="SVG Image" />
+         </button>
+      </div>
+   </div>
+   <input type="checkbox" class="openSidebarMenu" id="openSidebarMenu">
+   <label for="openSidebarMenu" class="sidebarIconToggle">
+      <div class="spinner diagonal part-1"></div>
+      <div class="spinner horizontal"></div>
+      <div class="spinner diagonal part-2"></div>
+   </label>
+   <div id="sidebarMenu">
+      <ul id="sidebarMenuInner" class="sidebarMenuInner">
+         <li><a id="display-name"></a></li>
+      </ul>
+   </div>
+   <div id="main" class="main"></div>
+   <script src="./js/marked.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/highlight.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/katex.min.js" integrity="sha512-sHSNLECRJSK+BFs7E8DiFc6pf6n90bLI85Emiw1jhreduZhK3VXgq9l4kAt9eTIHYAcuQBKHL01QKs4/3Xgl8g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+   <script src="./js/homeScript.js"></script>
+</body>
+
+</html>
