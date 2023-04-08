@@ -429,7 +429,7 @@ const eventHandler = (() => {
 	};
 
 	const addDisplayButtonListener = (displayButton, data) => {
-		function displayListener() {
+		function displayListener(event) {
 			console.log("display");
 
 			domHandler.createModal(data);
