@@ -4,6 +4,8 @@ const natural = require("natural");
 const stopWords = require("stopwords-pt");
 const stopWordsEnglish = require("stopwords").english;
 
+const LanguageDetect = require('languagedetect');
+
 const getAllMarkdownFiles = async (req, res) => {
 	const markdownFiles = await Markdown.find();
 	if (!markdownFiles)
@@ -130,14 +132,48 @@ const semanticSearchBody = async (req, res) => {
 	if (!req?.body?.query)
 		return res.status(400).json({ message: "Query required." });
 
+	const lngDetector = new LanguageDetect();
+	const detectedLanguages = lngDetector.detect(req.body.query, 1);
+
+	let noStemmerTokens;
+	let stemmer;
 	const tokenizer = new CustomTokenizer();
-	const stemmer = natural.PorterStemmer;
 	let queryTokens = tokenizer.tokenize(req.body.query);
-	queryTokens = queryTokens.filter(
-		(token) => !stopWords.includes(token) && !stopWordsEnglish.includes(token)
-	);
+
+	if (detectedLanguages.length > 0 && detectedLanguages[0][0] === "portuguese") {
+		console.log("pt");
+		queryTokens = queryTokens.filter(
+			(token) => !stopWords.includes(token)
+		);
+		stemmer = natural.PorterStemmerPt;
+	} else {
+		console.log("en");
+		queryTokens = queryTokens.filter(
+			(token) => !stopWordsEnglish.includes(token)
+		);
+		stemmer = natural.PorterStemmer;
+	}
+
+	noStemmerTokens = queryTokens;
 	queryTokens = queryTokens.map((token) => stemmer.stem(token));
-	const query = queryTokens.join(" ");
+
+	let addNoStemmer = false;
+	if (queryTokens.length !== noStemmerTokens.length) addNoStemmer = true;
+	else {
+		for (let i = 0; i < queryTokens.length; i++) {
+			if (queryTokens[i] !== noStemmerTokens[i]) {
+				addNoStemmer = true;
+				break;
+			}
+		}
+	}
+
+	let query;
+	if (addNoStemmer) {
+		query = queryTokens.join(" ") + " " + noStemmerTokens.join(" ");
+	} else {
+		query = queryTokens.join(" ");
+	}
 
 	console.log(query);
 
