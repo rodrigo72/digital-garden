@@ -118,19 +118,29 @@ const semanticSearch = async (req, res) => {
 	res.json(results);
 };
 
+class CustomTokenizer extends natural.WordTokenizer {
+	tokenize(text) {
+		const pattern = /[^a-zA-Z0-9áàãâéèêíïóôõöúüç]/g;
+		const words = text.split(pattern);
+		return words.filter(Boolean);
+	}
+}
+
 const semanticSearchBody = async (req, res) => {
 	if (!req?.body?.query)
 		return res.status(400).json({ message: "Query required." });
 
-	// Tokenize and stem the search query
-	const tokenizer = new natural.WordTokenizer();
+	const tokenizer = new CustomTokenizer();
 	const stemmer = natural.PorterStemmer;
 	let queryTokens = tokenizer.tokenize(req.body.query);
-	queryTokens = queryTokens.filter((token) => (!stopWords.includes(token)) && !stopWordsEnglish.includes(token));
+	queryTokens = queryTokens.filter(
+		(token) => !stopWords.includes(token) && !stopWordsEnglish.includes(token)
+	);
 	queryTokens = queryTokens.map((token) => stemmer.stem(token));
 	const query = queryTokens.join(" ");
 
-	// Use $text operator to search for documents that match the query
+	console.log(query);
+
 	const results = await Markdown.find(
 		{ $text: { $search: query }, isPublic: true }, // only public files
 		{ score: { $meta: "textScore" } }
